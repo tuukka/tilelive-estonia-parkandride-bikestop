@@ -2,6 +2,7 @@
 const geojsonVt = require('geojson-vt');
 const vtPbf = require('vt-pbf');
 const request = require('requestretry');
+const zlib = require('zlib');
 
 const getTileIndex = (url, callback) => {
   request({
@@ -19,32 +20,55 @@ const getTileIndex = (url, callback) => {
 
 class GeoJSONSource {
   constructor(uri, callback){
-    getTileIndex("https://p.hsl.fi/api/v1/facilities.geojson?limit=1000", (err, tileIndex) => {
+    getTileIndex("https://p.hsl.fi/api/v1/facilities.geojson?limit=1000", (err, facilityTileIndex) => {
       if (err){
         callback(err);
         return;
       }
-      this.tileIndex = tileIndex;
-      callback(null, this);
+      this.facilityTileIndex = facilityTileIndex;
+      getTileIndex("https://p.hsl.fi/api/v1/hubs.geojson?limit=1000", (err, hubTileIndex) => {
+        if (err){
+          callback(err);
+          return;
+        }
+        this.hubTileIndex = hubTileIndex;
+        callback(null, this);
+      })
     })
   };
 
   getTile(z, x, y, callback){
-    let tile = this.tileIndex.getTile(z, x, y)
+    let facilityTile = this.facilityTileIndex.getTile(z, x, y)
+    let hubTile = this.hubTileIndex.getTile(z, x, y)
 
-    if (tile === null){
-      tile = {features: []}
+    if (facilityTile === null){
+      facilityTile = {features: []}
     }
 
-    callback(null, vtPbf.fromGeojsonVt({ 'facilities': tile}), {"content-encoding": "none"})
+    if (hubTile === null){
+      hubTile = {features: []}
+    }
+
+    zlib.gzip(vtPbf.fromGeojsonVt({ facilities: facilityTile, hubs: hubTile}), function (err, buffer) {
+      if (err){
+        callback(err);
+        return;
+      }
+
+      callback(null, buffer, {"content-encoding": "gzip"})
+    })
   }
 
   getInfo(callback){
     callback(null, {
       format: "pbf",
       vector_layers: [{
-        "description": "",
-        "id": "facilities"
+        description: "",
+        id: "facilities"
+      },
+      {
+        description: "",
+        id: "hubs"
       }]
     })
   }
