@@ -1,6 +1,6 @@
 {
   "name": "tilelive-hsl-parkandride",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/hannesj/tilelive-hsl-parkandride#readme",
   "dependencies": {
-    "geojson-vt": "^2.1.8",
+    "geojson-vt": "^2.4.0",
     "requestretry": "^1.6.0",
     "vt-pbf": "^2.0.2"
   }

@@ -69,7 +69,10 @@ class GeoJSONSource {
       {
         description: "",
         id: "hubs"
-      }]
+      }],
+      maxzoom: 20,
+      minzoom: 1,
+      name: "HSL Park & Ride"
     })
   }
 }
