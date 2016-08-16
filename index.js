@@ -14,7 +14,10 @@ const getTileIndex = (url, callback) => {
       callback(err);
       return;
     }
-    callback(null, geojsonVt(JSON.parse(body), {maxZoom: 20})); //TODO: this should be configurable)
+    callback(null, geojsonVt(JSON.parse(body), {
+      maxZoom: 20,
+      buffer: 1024,
+    })); //TODO: this should be configurable)
   })
 }
 
