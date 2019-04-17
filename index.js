@@ -19,7 +19,12 @@ const getTileIndex = (url, callback) => {
             callback(err);
             return;
         }
-        callback(null, geojsonVt(osmtogeojson(JSON.parse(body)), {
+        console.log(body);
+        let json = JSON.parse(body);
+        console.log(json);
+        let geojson = osmtogeojson(json);
+        console.log(geojson);
+        callback(null, geojsonVt(geojson, {
             maxZoom: 20,
             buffer: 1024,
         })); //TODO: this should be configurable)
