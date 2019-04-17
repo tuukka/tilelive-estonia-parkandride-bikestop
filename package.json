@@ -19,6 +19,7 @@
   "dependencies": {
     "geojson-vt": "^2.4.0",
     "requestretry": "^1.6.0",
-    "vt-pbf": "^2.0.2"
+    "vt-pbf": "^2.0.2",
+    "osmtogeojson": "^3.0.0-beta.3"
   }
 }
